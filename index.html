@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>生日快乐 · 荆馨瑶 🎂</title>
+<style>
+  :root{
+    --pink:#ff8fab; --pink-deep:#ff5d8f; --cream:#fff0f5;
+    --purple:#b388eb; --gold:#ffd166; --blue:#6a9bff;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; }
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+    background:linear-gradient(160deg,#ffe3ee 0%,#ffd6e8 30%,#e8d5ff 65%,#d6ecff 100%);
+    background-size:300% 300%; animation:bgmove 16s ease infinite;
+    overflow:hidden; color:#5b3a4e;
+    display:flex; align-items:center; justify-content:center; touch-action:manipulation;
+  }
+  @keyframes bgmove{ 0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;} }
+
+  .glow{ position:fixed; border-radius:50%; filter:blur(28px); opacity:.45; animation:float 9s ease-in-out infinite; }
+  .glow.g1{ width:260px; height:260px; background:#ffc2d9; top:-60px; left:-60px; }
+  .glow.g2{ width:220px; height:220px; background:#cdb4ff; bottom:-40px; right:-40px; animation-delay:2s; }
+  .glow.g3{ width:160px; height:160px; background:#c2f0e4; top:30%; left:75%; animation-delay:4s; }
+  @keyframes float{ 0%,100%{ transform:translateY(0) scale(1);} 50%{ transform:translateY(-22px) scale(1.06);} }
+
+  #stars{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+  .star{ position:absolute; width:3px; height:3px; background:#fff; border-radius:50%; box-shadow:0 0 6px 2px rgba(255,255,255,.7); animation:twinkle 2.5s ease-in-out infinite; }
+  @keyframes twinkle{ 0%,100%{ opacity:.12; transform:scale(.6);} 50%{ opacity:.95; transform:scale(1.25);} }
+
+  #confetti{ position:fixed; inset:0; pointer-events:none; z-index:1; }
+  #balloons{ position:fixed; inset:0; pointer-events:none; z-index:2; overflow:hidden; }
+  .balloon{ position:absolute; bottom:-120px; font-size:42px; opacity:.85; animation:rise linear infinite; }
+  @keyframes rise{
+    0%{ transform:translateY(0) translateX(0) rotate(-4deg); }
+    25%{ transform:translateY(-30vh) translateX(18px) rotate(4deg); }
+    50%{ transform:translateY(-60vh) translateX(-14px) rotate(-4deg); }
+    75%{ transform:translateY(-90vh) translateX(12px) rotate(5deg); }
+    100%{ transform:translateY(-130vh) translateX(-8px) rotate(0); }
+  }
+
+  .heart{ position:fixed; z-index:4; pointer-events:none; font-size:22px; transform:translate(-50%,-50%); animation:heartup 1.6s ease-out forwards; }
+  @keyframes heartup{
+    0%{ opacity:0; transform:translate(-50%,-50%) scale(.4); }
+    18%{ opacity:1; transform:translate(-50%,-62%) scale(1); }
+    100%{ opacity:0; transform:translate(-50%,-240%) scale(1.25); }
+  }
+
+  /* 信封开场 */
+  .envelope{
+    position:fixed; inset:0; z-index:20; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+    background:linear-gradient(160deg,#ffe3ee,#e8d5ff 70%,#d6ecff); text-align:center; padding:30px;
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .envelope.open{ opacity:0; transform:scale(1.18); pointer-events:none; }
+  .seal{ font-size:74px; animation:bounce 1.6s ease infinite; filter:drop-shadow(0 10px 18px rgba(255,93,143,.3)); }
+  @keyframes bounce{ 0%,100%{ transform:translateY(0) rotate(-4deg);} 50%{ transform:translateY(-14px) rotate(4deg);} }
+  .env-title{ font-size:24px; font-weight:800; letter-spacing:2px; background:linear-gradient(90deg,#ff5d8f,#b75dd8,#6a9bff); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .env-sub{ font-size:15px; color:#9b7d8c; }
+  .env-btn{ margin-top:8px; font-size:15px; font-weight:700; color:#fff; padding:13px 34px; border-radius:999px; background:linear-gradient(90deg,#ff8fab,#b388eb); box-shadow:0 10px 24px rgba(255,93,143,.35); animation:pulse 2s ease infinite; }
+  @keyframes pulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.05);} }
+
+  /* 主卡片 */
+  .card{
+    position:relative; z-index:3; width:min(92vw,470px); height:min(96vh,880px);
+    overflow-y:auto; overflow-x:hidden; background:rgba(255,255,255,.62);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    border:1.5px solid rgba(255,255,255,.9); border-radius:34px; padding:32px 26px 36px;
+    text-align:center; box-shadow:0 24px 60px rgba(255,93,143,.22), inset 0 1px 0 rgba(255,255,255,.8);
+    animation:pop .9s cubic-bezier(.22,1.4,.36,1) both; scrollbar-width:none;
+  }
+  .card::-webkit-scrollbar{ display:none; }
+  @keyframes pop{ from{ opacity:0; transform:translateY(40px) scale(.92);} to{ opacity:1; transform:translateY(0) scale(1);} }
+
+  .badge{ display:inline-flex; align-items:center; gap:6px; background:linear-gradient(90deg,#ff8fab,#b388eb); color:#fff; font-size:12px; letter-spacing:1px; padding:6px 14px; border-radius:999px; margin-bottom:14px; box-shadow:0 6px 16px rgba(255,93,143,.35); }
+  .title{ font-size:42px; font-weight:800; letter-spacing:2px; background:linear-gradient(90deg,#ff5d8f,#b75dd8,#6a9bff,#ff5d8f); background-size:300% auto; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shine 3.5s linear infinite; margin-bottom:10px; }
+  .name{ font-size:32px; font-weight:800; background:linear-gradient(90deg,#ff7aa2,#ff9ec2,#a77bff,#ff7aa2); background-size:250% auto; -webkit-background-clip:text; background-clip:text; color:transparent; letter-spacing:4px; animation:shine 4.5s linear infinite; }
+  @keyframes shine{ to{ background-position:300% center; } }
+  .wish-main{ font-size:14.5px; line-height:2; color:#8a6c7c; margin:14px auto 18px; max-width:300px; }
+
+  /* ===== 蛋糕 ===== */
+  .cake{ position:relative; width:240px; height:266px; margin:0 auto 14px; cursor:pointer; filter:drop-shadow(0 16px 26px rgba(255,93,143,.3)); }
+  .foot{ position:absolute; left:50%; transform:translateX(-50%); bottom:0; width:96px; height:14px; border-radius:50%; background:linear-gradient(180deg,#f4e6f2,#d9c3dd); box-shadow:0 3px 6px rgba(0,0,0,.08); }
+  .foot::after{ content:""; position:absolute; top:3px; left:12px; width:70%; height:4px; background:rgba(255,255,255,.5); border-radius:50%; }
+  .stem{ position:absolute; left:50%; transform:translateX(-50%); bottom:10px; width:18px; height:22px; background:linear-gradient(180deg,#e8d7ec,#cbb6d2); }
+  .plate{ position:absolute; left:50%; transform:translateX(-50%); bottom:30px; width:208px; height:22px; border-radius:50%; background:linear-gradient(180deg,#fdf3fb,#e5d4ea); box-shadow:0 5px 10px rgba(0,0,0,.10); }
+  .plate::after{ content:""; position:absolute; top:4px; left:22px; width:64%; height:7px; background:rgba(255,255,255,.55); border-radius:50%; }
+  .tier{ position:absolute; left:50%; transform:translateX(-50%); border-radius:12px 12px 18px 18px; box-shadow:inset 0 -12px 16px rgba(0,0,0,.07), inset 0 3px 0 rgba(255,255,255,.55); }
+  .tier.t1{ bottom:48px; width:168px; height:56px; background:linear-gradient(180deg,#ffd3da,#ff9ec2); }
+  .tier.t2{ bottom:98px; width:136px; height:52px; background:linear-gradient(180deg,#fff3d1,#ffd166); }
+  .tier.t3{ bottom:144px; width:106px; height:48px; background:linear-gradient(180deg,#d9f5e9,#8fd6c4); }
+  .top-cap{ position:absolute; left:50%; transform:translateX(-50%); bottom:188px; width:122px; height:26px; background:linear-gradient(180deg,#ffffff,#ffe9f1); border-radius:13px; box-shadow:0 3px 6px rgba(255,93,143,.16), inset 0 -3px 5px rgba(255,93,143,.10); }
+  .drips{ position:absolute; left:3%; right:3%; top:5px; height:26px; pointer-events:none; }
+  .drip{ position:absolute; top:0; border-radius:0 0 8px 8px; background:linear-gradient(180deg,#ffffff,#fff0f5); box-shadow:0 2px 3px rgba(255,93,143,.10); }
+  .sprinkle{ position:absolute; border-radius:2px; }
+  .plaque{ position:absolute; left:50%; transform:translateX(-50%); bottom:9px; background:rgba(255,255,255,.94); border:1px solid #ffd9e6; color:#e05b8b; font-size:11px; font-weight:800; letter-spacing:1px; padding:3px 12px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,.06); white-space:nowrap; }
+  .candles{ position:absolute; left:50%; transform:translateX(-50%); bottom:212px; width:116px; height:30px; }
+  .candle{ position:absolute; bottom:0; width:10px; height:28px; border-radius:5px; background:repeating-linear-gradient(45deg,#fff 0 5px,#ffb3c6 5px 10px); box-shadow:0 2px 4px rgba(0,0,0,.12); }
+  .flame{ position:absolute; left:50%; bottom:100%; transform:translateX(-50%); width:11px; height:17px; background:#ffd166; border-radius:50% 50% 50% 50%/60% 60% 40% 40%; filter:blur(.4px); transform-origin:bottom center; animation:flick .5s ease-in-out infinite alternate; box-shadow:0 0 13px 4px rgba(255,180,60,.6); }
+  .flame::after{ content:""; position:absolute; left:34%; top:4px; width:5px; height:8px; background:#fff2c4; border-radius:50%; }
+  @keyframes flick{ from{ transform:translateX(-50%) scaleY(1) rotate(-3deg);} to{ transform:translateX(-52%) scaleY(1.15) rotate(4deg);} }
+  .smoke{ position:absolute; left:50%; bottom:12px; transform:translateX(-50%); width:8px; height:8px; background:#cfcfcf; border-radius:50%; opacity:0; }
+  .cake.out .flame{ animation:none; opacity:0; transition:opacity .25s; }
+  .cake.out .smoke{ animation:puff 1.6s ease-out forwards; }
+  @keyframes puff{ 0%{ opacity:.6; transform:translate(-50%,0) scale(1);} 100%{ opacity:0; transform:translate(-50%,-34px) scale(2.4);} }
+  .cherry{ position:absolute; left:50%; transform:translateX(-50%); bottom:238px; font-size:21px; line-height:1; animation:cherrybob 3s ease-in-out infinite; }
+  @keyframes cherrybob{ 0%,100%{ transform:translateX(-50%) rotate(-4deg);} 50%{ transform:translateX(-50%) rotate(5deg);} }
+  .cake-hint{ font-size:12px; color:#b39aa8; margin-top:-6px; margin-bottom:16px; }
+
+  /* 祝福语（单句） */
+  .wishes-block{ background:rgba(255,255,255,.55); border:1px solid rgba(255,255,255,.85); border-radius:20px; padding:20px 16px; margin-bottom:16px; }
+  .block-label{ font-size:12px; letter-spacing:2px; color:#a082b0; margin-bottom:10px; }
+  .wish-text{ font-size:16px; line-height:1.8; color:#6b4a5c; font-weight:600; }
+
+  /* 幸运签 */
+  .fortune-block{ background:rgba(255,255,255,.55); border:1px solid rgba(255,255,255,.85); border-radius:20px; padding:18px 16px 22px; margin-bottom:18px; }
+  .fortune-slip{ position:relative; width:190px; height:120px; margin:8px auto 14px; border-radius:14px 14px 20px 20px; background:linear-gradient(180deg,#fff6f9,#ffe9f1); box-shadow:0 10px 22px rgba(255,93,143,.18), inset 0 2px 0 rgba(255,255,255,.9); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .fortune-slip::before{ content:""; position:absolute; top:-2px; left:50%; transform:translateX(-50%); width:14px; height:14px; background:#ff8fab; border-radius:0 0 50% 50%; }
+  .fortune-text{ font-size:15px; font-weight:700; color:#d14d7e; padding:18px 18px 6px; line-height:1.7; }
+  .fortune-text.shake{ animation:shake .6s ease; }
+  @keyframes shake{ 0%,100%{ transform:translateX(0);} 20%{ transform:translateX(-5px);} 40%{ transform:translateX(5px);} 60%{ transform:translateX(-4px);} 80%{ transform:translateX(4px);} }
+  .fortune-btn{ display:inline-block; border:none; cursor:pointer; font-size:14px; font-weight:800; letter-spacing:2px; color:#fff; padding:11px 30px; border-radius:999px; background:linear-gradient(90deg,#ff8fab,#b388eb); box-shadow:0 10px 20px rgba(255,93,143,.3); transition:transform .15s; }
+  .fortune-btn:active{ transform:scale(.94); }
+  .fortune-btn:disabled{ background:#d9c6d0; box-shadow:none; cursor:not-allowed; }
+
+  .btn{ display:inline-block; border:none; cursor:pointer; font-size:17px; font-weight:800; letter-spacing:2px; color:#fff; padding:15px 40px; border-radius:999px; background:linear-gradient(90deg,#ff8fab,#b388eb); box-shadow:0 12px 26px rgba(255,93,143,.4); transition:transform .18s ease; }
+  .btn:active{ transform:scale(.95); }
+  .fw-btn{ margin-top:14px; display:inline-block; border:none; cursor:pointer; font-size:16px; font-weight:800; letter-spacing:2px; color:#fff; padding:13px 34px; border-radius:999px; background:linear-gradient(90deg,#6a9bff,#b388eb); box-shadow:0 12px 26px rgba(106,155,255,.4); transition:transform .18s ease; }
+  .fw-btn:active{ transform:scale(.95); }
+  .msg{ display:none; margin-top:16px; font-size:16px; font-weight:700; color:#ff5d8f; animation:pop .6s ease both; line-height:1.7; }
+  .footer{ margin-top:14px; font-size:12px; color:#b39aa8; }
+
+  /* 烟花场景 */
+  .fw-scene{ position:fixed; inset:0; z-index:30; background:radial-gradient(circle at 50% 42%, #171732 0%, #05050c 72%); display:none; }
+  .fw-scene.on{ display:block; }
+  #fwCanvas{ position:absolute; inset:0; width:100%; height:100%; }
+  .fw-close{ position:absolute; top:16px; right:16px; width:42px; height:42px; border-radius:50%; background:rgba(255,255,255,.14); color:#fff; font-size:20px; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:2; }
+  .fw-hint{ position:absolute; bottom:26px; left:0; right:0; text-align:center; color:rgba(255,255,255,.5); font-size:13px; letter-spacing:1px; z-index:2; }
+</style>
+</head>
+<body>
+
+  <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
+  <div id="stars"></div>
+  <canvas id="confetti"></canvas>
+  <div id="balloons"></div>
+
+  <div class="envelope" id="envelope">
+    <div class="seal">💌</div>
+    <div class="env-title">给 荆馨瑶 的一封信</div>
+    <div class="env-sub">有一份专属祝福，等你亲手打开 ✨</div>
+    <div class="env-btn">点 击 打 开</div>
+  </div>
+
+  <div class="card" id="card">
+    <div class="badge">✨ HAPPY BIRTHDAY ✨</div>
+    <div class="title">生日快乐</div>
+    <div class="name">荆馨瑶</div>
+    <p class="wish-main">亲爱的荆馨瑶，生日快乐 🎂<br>愿你把烦恼统统吹灭，把愿望统统点亮；<br>往后的每一岁，都比从前更闪闪发光。</p>
+
+    <div class="cake" id="cake" title="吹蜡烛">
+      <div class="foot"></div>
+      <div class="stem"></div>
+      <div class="plate"></div>
+      <div class="tier t1 has-drips" data-sprinkles><div class="plaque">生日快乐</div></div>
+      <div class="tier t2 has-drips" data-sprinkles></div>
+      <div class="tier t3 has-drips" data-sprinkles></div>
+      <div class="top-cap has-drips"></div>
+      <div class="candles" id="candles"></div>
+      <div class="cherry">🍒</div>
+    </div>
+    <div class="cake-hint">👆 点蛋糕，吹蜡烛许个愿</div>
+
+    <div class="wishes-block">
+      <div class="block-label">🎀 今日份祝福</div>
+      <div class="wish-text">愿你眼里有星光，身边有暖阳，被这世界温柔以待，一生顺遂欢喜 🌷</div>
+    </div>
+
+    <div class="fortune-block">
+      <div class="block-label">🎐 生日幸运签</div>
+      <div class="fortune-slip"><div class="fortune-text" id="fortuneText">点一下按钮，抽取你的生日运势</div></div>
+      <button class="fortune-btn" id="fortuneBtn">🎋 抽签</button>
+    </div>
+
+    <button class="btn" id="btn">🎉 点我送祝福</button>
+    <div class="msg" id="msg">生日快乐，荆馨瑶！🎂<br>愿所有美好，都如约而至～</div>
+    <button class="fw-btn" id="fwBtn">🎆 放一场烟花</button>
+    <div class="footer">Made with 💗 献给独一无二的你</div>
+  </div>
+
+  <!-- 烟花场景 -->
+  <div class="fw-scene" id="fwScene">
+    <canvas id="fwCanvas"></canvas>
+    <div class="fw-close" id="fwClose">✕</div>
+    <div class="fw-hint">点一下画面任意处，返回祝福页</div>
+  </div>
+
+<script>
+(function(){
+  /* ---------- 星光 ---------- */
+  const starsBox = document.getElementById('stars');
+  for(let i=0;i<22;i++){
+    const s = document.createElement('span'); s.className='star';
+    s.style.left = (Math.random()*100)+'%'; s.style.top = (Math.random()*100)+'%';
+    s.style.animationDelay = (Math.random()*2.5)+'s';
+    s.style.animationDuration = (1.8+Math.random()*2.2)+'s';
+    starsBox.appendChild(s);
+  }
+
+  /* ---------- 彩带画布 ---------- */
+  const cv = document.getElementById('confetti');
+  const c2d = cv.getContext('2d');
+  let W, H;
+  function resize(){ W = cv.width = innerWidth; H = cv.height = innerHeight; }
+  addEventListener('resize', resize); resize();
+  const COLORS = ['#ff8fab','#ffc2d1','#ffb3c6','#ffd6e0','#ff7096','#ffd166','#a8e6cf','#c2f0e4','#ffafcc','#b388eb'];
+  const pieces = [];
+  for(let i=0;i<100;i++){
+    pieces.push({ x:Math.random()*W, y:Math.random()*H, w:6+Math.random()*8, h:8+Math.random()*12,
+      c:COLORS[i%COLORS.length], vx:(Math.random()-.5)*.6, vy:1+Math.random()*2,
+      rot:Math.random()*Math.PI, vr:(Math.random()-.5)*.12 });
+  }
+  function burst(x,y,count){ count = count || 120;
+    for(let i=0;i<count;i++){
+      const a = Math.random()*Math.PI*2, sp = 4+Math.random()*9;
+      pieces.push({ x:x, y:y, w:5+Math.random()*7, h:7+Math.random()*10, c:COLORS[i%COLORS.length],
+        vx:Math.cos(a)*sp, vy:Math.sin(a)*sp-2, rot:Math.random()*Math.PI, vr:(Math.random()-.5)*.3, life:60+Math.random()*40 });
+    }
+  }
+  function confettiLoop(){
+    c2d.clearRect(0,0,W,H);
+    for(let i=pieces.length-1;i>=0;i--){
+      const p = pieces[i];
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      if(p.life != null){ p.vy += .12; p.life--; if(p.life<=0){ pieces.splice(i,1); continue; } }
+      else { if(p.y > H+20){ p.y=-20; p.x=Math.random()*W; } if(p.x > W+20) p.x=-20; if(p.x < -20) p.x=W+20; }
+      c2d.save(); c2d.translate(p.x,p.y); c2d.rotate(p.rot);
+      c2d.fillStyle=p.c; c2d.globalAlpha = p.life!=null ? Math.min(1,p.life/40) : .85;
+      c2d.fillRect(-p.w/2,-p.h/2,p.w,p.h); c2d.restore();
+    }
+    requestAnimationFrame(confettiLoop);
+  }
+  confettiLoop();
+
+  /* ---------- 气球 ---------- */
+  const balloons = document.getElementById('balloons');
+  const bars = ['🎈','🎈','🎈','🌸','💗','🩷','🎀','💕'];
+  for(let i=0;i<12;i++){
+    const b = document.createElement('span');
+    b.className='balloon'; b.textContent = bars[i%8];
+    b.style.left = (3+Math.random()*94)+'%';
+    b.style.fontSize = (26+Math.random()*30)+'px';
+    b.style.animationDuration = (9+Math.random()*9)+'s';
+    b.style.animationDelay = (Math.random()*9)+'s';
+    balloons.appendChild(b);
+  }
+
+  /* ---------- 点击爱心 ---------- */
+  const HEARTS = ['💗','💕','💖','🩷','💛','💜','🩵'];
+  function spawnHeart(x,y){
+    const h = document.createElement('span'); h.className='heart';
+    h.textContent = HEARTS[Math.floor(Math.random()*HEARTS.length)];
+    h.style.left = x+'px'; h.style.top = y+'px';
+    document.body.appendChild(h);
+    setTimeout(()=> h.remove(), 1700);
+  }
+  document.addEventListener('pointerdown', e=>{
+    const t = e.target;
+    if(t.closest && (t.closest('button') || t.closest('.cake') || t.closest('.envelope') || t.closest('.fw-scene'))) return;
+    spawnHeart(e.clientX, e.clientY);
+  });
+
+  /* ---------- 蛋糕装饰 ---------- */
+  document.querySelectorAll('.has-drips').forEach(el=>{
+    const dbox = document.createElement('div'); dbox.className='drips';
+    const n = el.classList.contains('top-cap') ? 7 : 6;
+    for(let i=0;i<n;i++){
+      const d = document.createElement('span'); d.className='drip';
+      d.style.left = ((i+0.5)/n*100) + '%';
+      d.style.width = (10+Math.random()*5) + 'px';
+      d.style.height = (10+Math.random()*14) + 'px';
+      dbox.appendChild(d);
+    }
+    el.appendChild(dbox);
+  });
+  const SPRINKLE_COLORS = ['#ff5d8f','#ffd166','#6a9bff','#8fd6c4','#b388eb','#ffffff','#ff9ec2'];
+  document.querySelectorAll('[data-sprinkles]').forEach(tier=>{
+    for(let i=0;i<13;i++){
+      const s = document.createElement('span'); s.className='sprinkle';
+      const dot = Math.random() < .4;
+      s.style.width = dot ? '4px' : (6+Math.random()*5)+'px';
+      s.style.height = dot ? '4px' : '3px';
+      s.style.left = (8+Math.random()*82)+'%';
+      s.style.top = (14+Math.random()*60)+'%';
+      s.style.background = SPRINKLE_COLORS[Math.floor(Math.random()*SPRINKLE_COLORS.length)];
+      s.style.transform = 'rotate('+(Math.random()*180)+'deg)';
+      s.style.borderRadius = dot ? '50%' : '2px';
+      tier.appendChild(s);
+    }
+  });
+  const candlesBox = document.getElementById('candles');
+  [6,30,54,78,102].forEach(x=>{
+    const c = document.createElement('div'); c.className='candle'; c.style.left = x+'px';
+    const f = document.createElement('div'); f.className='flame';
+    const s = document.createElement('div'); s.className='smoke';
+    c.appendChild(f); c.appendChild(s); candlesBox.appendChild(c);
+  });
+
+  /* ---------- 音频引擎 ---------- */
+  let ac = null;
+  function audio(){ try{ ac = ac || new (window.AudioContext||window.webkitAudioContext)(); if(ac.state==='suspended') ac.resume(); return ac; }catch(e){ return null; } }
+  function tone(freq, dur, type, vol, start){
+    if(!ac) return;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type || 'sine'; o.frequency.value = freq;
+    g.gain.setValueAtTime(.0001, start);
+    g.gain.exponentialRampToValueAtTime(vol, start + .02);
+    g.gain.exponentialRampToValueAtTime(.0001, start + dur);
+    o.connect(g); g.connect(ac.destination);
+    o.start(start); o.stop(start + dur + .05);
+  }
+  function sfx(kind){
+    if(!audio()) return; const t = ac.currentTime + .02;
+    if(kind === 'open'){ tone(523.25,.18,'sine',.25,t); tone(783.99,.24,'sine',.25,t+.13); }
+    else if(kind === 'fortune'){ tone(659.25,.14,'sine',.22,t); tone(880.00,.16,'sine',.2,t+.09); tone(1046.5,.26,'sine',.18,t+.18); }
+    else if(kind === 'candle'){ tone(987.77,.2,'sine',.18,t); tone(1318.5,.3,'sine',.14,t+.1); }
+    else if(kind === 'launch'){ [293.66,392.00,523.25].forEach((f,i)=> tone(f,.11,'sine',.11,t+i*.06)); }
+    else if(kind === 'boom'){ tone(180,.42,'sine',.22,t); tone(110,.5,'sine',.18,t+.02); }
+  }
+  const NOTES = { 'G4':392.00,'A4':440.00,'B4':493.88,'C5':523.25,'D5':587.33,'E5':659.25,'F5':698.46,'G5':783.99 };
+  const MELODY = [
+    ['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],
+    ['G4',.75],['G4',.25],['A4',1],['G4',1],['D5',1],['C5',2],
+    ['G4',.75],['G4',.25],['G5',1],['E5',1],['C5',1],['B4',1],['A4',2],
+    ['F5',.75],['F5',.25],['E5',1],['C5',1],['D5',1],['C5',2]
+  ];
+  const BEAT = .4, MELODY_SECONDS = 25 * BEAT;
+  function playMelodyOnce(){
+    if(!audio()) return;
+    let t = ac.currentTime + .06;
+    MELODY.forEach(([n,d])=>{
+      const dur = d*BEAT, f = NOTES[n];
+      tone(f, dur, 'triangle', .32, t);
+      tone(f/2, dur, 'sine', .12, t);
+      tone(f*1.5, dur*.9, 'sine', .06, t);
+      t += dur;
+    });
+    [523.25,659.25,783.99].forEach(f=> tone(f, 2.3, 'sine', .07, t-.2));
+  }
+
+  /* ---------- 背景音乐：循环播放生日歌 ---------- */
+  let bgTimer = null, bgOn = false;
+  function startBg(){
+    if(!audio() || bgOn) return;
+    bgOn = true;
+    const loop = ()=>{ if(!bgOn) return; playMelodyOnce(); bgTimer = setTimeout(loop, (MELODY_SECONDS+1.4)*1000); };
+    loop();
+  }
+
+  /* ---------- 信封：打开并开始播放生日歌 ---------- */
+  const envelope = document.getElementById('envelope');
+  envelope.addEventListener('click', ()=>{
+    sfx('open');
+    startBg();               // 打开信封即开始循环播放生日歌
+    envelope.classList.add('open');
+    setTimeout(()=>{ envelope.style.display='none'; }, 700);
+  });
+
+  /* ---------- 幸运签（只能抽一次） ---------- */
+  const FORTUNES = [
+    '今日大吉 · 会有一个惊喜不请自来 🎁',
+    '好运签 · 你想要的，都正在路上 🛵',
+    '桃花签 · 有人偷偷喜欢你很久了 💘',
+    '财富签 · 钱包和快乐都会越来越鼓 💰',
+    '健康签 · 吃好睡好，诸事顺遂 🍊',
+    '心愿签 · 许下的愿望统统都会实现 🌠',
+    '贵人签 · 新的一岁会遇到懂你的人 🤝',
+    '星光签 · 属于你的高光时刻即将到来 ⭐'
+  ];
+  const fortuneText = document.getElementById('fortuneText');
+  const fortuneBtn = document.getElementById('fortuneBtn');
+  function drawFortune(){
+    sfx('fortune');
+    fortuneText.textContent = FORTUNES[Math.floor(Math.random()*FORTUNES.length)];
+    fortuneText.classList.remove('shake'); void fortuneText.offsetWidth; fortuneText.classList.add('shake');
+    fortuneBtn.disabled = true;
+    fortuneBtn.textContent = '🎋 已抽，祝好运';
+  }
+  fortuneBtn.addEventListener('click', drawFortune);
+
+  /* ---------- 主祝福：吹蜡烛 + 礼花（生日歌已在循环） ---------- */
+  const cake = document.getElementById('cake');
+  const btn = document.getElementById('btn');
+  const msg = document.getElementById('msg');
+  let done = false;
+  function celebrate(x,y){
+    if(done) return; done = true;
+    cake.classList.add('out'); msg.style.display='block'; btn.textContent='💖 已为你送上祝福 💖';
+    sfx('candle'); burst(x,y);
+    setTimeout(()=>burst(W*.25, H*.32), 450);
+    setTimeout(()=>burst(W*.75, H*.3), 950);
+    setTimeout(()=>burst(W*.5, H*.2, 160), 1500);
+    setTimeout(()=>{ burst(W*.2, H*.25); burst(W*.8, H*.25); }, 2100);
+  }
+  btn.addEventListener('click', e=> celebrate(e.clientX||W/2, e.clientY||H/2));
+  cake.addEventListener('click', e=> celebrate(e.clientX||W/2, e.clientY||H/2));
+
+  /* ---------- 烟花场景（黑底） ---------- */
+  const fwScene = document.getElementById('fwScene');
+  const fwCanvas = document.getElementById('fwCanvas');
+  const fwc = fwCanvas.getContext('2d');
+  const FW_COLORS = ['#ff5d8f','#ffd166','#8fd6c4','#b388eb','#6a9bff','#ff9ec2','#a8e6cf','#ffb03a'];
+  let fwW, fwH;
+  function resizeFw(){ fwW = fwCanvas.width = innerWidth; fwH = fwCanvas.height = innerHeight; }
+  addEventListener('resize', ()=>{ if(fwOpen) resizeFw(); });
+  const fwRockets = [], fwSparks = [], fwFlashes = [];
+  let fwOpen = false, fwTimer = null, fwRaf = null;
+
+  function fwLaunch(){
+    const x = fwW*.15 + Math.random()*fwW*.7;
+    fwRockets.push({ x:x, y:fwH+8, vx:(Math.random()-.5)*1.6, vy:-(9+Math.random()*5.5),
+      c:FW_COLORS[Math.floor(Math.random()*FW_COLORS.length)] });
+    sfx('launch');
+  }
+  function fwExplode(r){
+    for(let i=0;i<90;i++){
+      const a = Math.random()*Math.PI*2, sp = 1.5+Math.random()*4.8;
+      const white = Math.random() < .18;
+      fwSparks.push({ x:r.x, y:r.y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp,
+        c: white ? '#ffffff' : r.c, life:55+Math.random()*40, r:1.4+Math.random()*1.9 });
+    }
+    fwFlashes.push({ x:r.x, y:r.y, life:10, max:10 });
+    sfx('boom');
+  }
+  function openFw(){
+    if(fwOpen) return; fwOpen = true;
+    resizeFw(); fwScene.classList.add('on');
+    fwRaf = requestAnimationFrame(fwLoop);
+    fwTimer = setInterval(()=>{ fwLaunch(); if(Math.random()<.6) fwLaunch(); }, 340);
+  }
+  function closeFw(){
+    if(!fwOpen) return; fwOpen = false;
+    clearInterval(fwTimer); cancelAnimationFrame(fwRaf);
+    fwRockets.length = 0; fwSparks.length = 0; fwFlashes.length = 0;
+    fwScene.classList.remove('on');
+  }
+  function fwLoop(){
+    if(!fwOpen) return;
+    fwc.clearRect(0,0,fwW,fwH);
+    /* 火箭升空 */
+    for(let i=fwRockets.length-1;i>=0;i--){
+      const r = fwRockets[i];
+      r.x += r.vx; r.y += r.vy; r.vy += .14;
+      fwc.fillStyle = r.c; fwc.globalAlpha = .95;
+      fwc.beginPath(); fwc.arc(r.x, r.y, 2.6, 0, Math.PI*2); fwc.fill();
+      if(r.vy >= -1.5 || r.y < fwH*.24){ fwExplode(r); fwRockets.splice(i,1); }
+    }
+    /* 爆炸闪光 */
+    for(let i=fwFlashes.length-1;i>=0;i--){
+      const fl = fwFlashes[i]; fl.life--;
+      if(fl.life<=0){ fwFlashes.splice(i,1); continue; }
+      const a = fl.life/fl.max, rad = (1-a)*52 + 6;
+      fwc.globalAlpha = a*.6; fwc.fillStyle = '#fff';
+      fwc.beginPath(); fwc.arc(fl.x, fl.y, rad, 0, Math.PI*2); fwc.fill();
+    }
+    /* 火花散落 */
+    for(let i=fwSparks.length-1;i>=0;i--){
+      const s = fwSparks[i];
+      s.x += s.vx; s.y += s.vy; s.vy += .05; s.vx *= .985; s.vy *= .985; s.life--;
+      if(s.life<=0){ fwSparks.splice(i,1); continue; }
+      fwc.globalAlpha = Math.min(1, s.life/28); fwc.fillStyle = s.c;
+      fwc.beginPath(); fwc.arc(s.x, s.y, s.r, 0, Math.PI*2); fwc.fill();
+    }
+    fwc.globalAlpha = 1;
+    fwRaf = requestAnimationFrame(fwLoop);
+  }
+  const fwBtn = document.getElementById('fwBtn');
+  fwBtn.addEventListener('click', openFw);
+  fwScene.addEventListener('click', closeFw);
+})();
+</script>
+</body>
+</html>
