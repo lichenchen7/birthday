@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>星空爱心生日 · 荆馨瑶</title>
+<style>
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; }
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+    background:radial-gradient(circle at 50% 30%, #141430 0%, #07071a 55%, #03030c 100%);
+    overflow:hidden; color:#fff; position:fixed; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    touch-action:manipulation;
+  }
+
+  /* 星空画布 */
+  #stars{ position:absolute; inset:0; z-index:0; }
+
+  /* 主内容 */
+  .stage{ position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; padding:20px 14px; text-align:center; }
+
+  .title{
+    font-size:26px; font-weight:800; letter-spacing:3px; margin-bottom:6px;
+    background:linear-gradient(90deg,#ffe08a,#ffb3c6,#b79cff,#ffe08a); background-size:300% auto;
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:shine 4s linear infinite; text-shadow:0 0 24px rgba(255,180,120,.35);
+  }
+  @keyframes shine{ to{ background-position:300% center; } }
+  .subtitle{ font-size:13px; color:rgba(255,255,255,.6); letter-spacing:2px; margin-bottom:18px; }
+
+  /* ===== 星空蛋糕 ===== */
+  .cake{
+    position:relative; width:210px; height:230px; margin:0 auto 18px;
+    filter:drop-shadow(0 0 34px rgba(160,120,255,.35));
+  }
+  .glow-halo{ position:absolute; left:50%; top:44%; transform:translate(-50%,-50%); width:230px; height:230px; border-radius:50%; background:radial-gradient(circle, rgba(120,90,220,.35), transparent 70%); z-index:0; }
+  .cake-body{
+    position:absolute; z-index:1; left:50%; transform:translateX(-50%); bottom:20px;
+    width:160px; height:110px; border-radius:14px 14px 24px 24px;
+    background:linear-gradient(180deg,#2a1a4a,#160b2e);
+    box-shadow:inset 0 -14px 22px rgba(0,0,0,.5), inset 0 3px 0 rgba(255,255,255,.12);
+  }
+  .cake-top{
+    position:absolute; z-index:2; left:50%; transform:translateX(-50%); bottom:118px;
+    width:172px; height:34px; border-radius:50%;
+    background:linear-gradient(180deg,#3a2560,#241344);
+    box-shadow:inset 0 3px 0 rgba(255,255,255,.14);
+  }
+  .plate{
+    position:absolute; z-index:3; left:50%; transform:translateX(-50%); bottom:8px;
+    width:200px; height:22px; border-radius:50%;
+    background:linear-gradient(180deg,#241348,#120927);
+    box-shadow:0 6px 14px rgba(0,0,0,.5);
+  }
+  .spot{ position:absolute; z-index:4; border-radius:50%; pointer-events:none; }
+  .candle{ position:absolute; z-index:2; left:50%; transform:translateX(-50%); bottom:150px; width:13px; height:52px; background:linear-gradient(180deg,#ffd9a0,#e0b06a); border-radius:6px; box-shadow:0 2px 4px rgba(0,0,0,.4); }
+  .flame{
+    position:absolute; left:50%; bottom:100%; transform:translateX(-50%);
+    width:26px; height:34px; transform-origin:bottom center;
+    animation:flick .4s ease-in-out infinite alternate;
+  }
+  .flame .in1{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:26px; height:34px; background:#ffde66; border-radius:50% 50% 50% 50%/62% 62% 38% 38%; box-shadow:0 0 20px 8px rgba(255,190,70,.65); }
+  .flame .in2{ position:absolute; left:50%; top:60%; transform:translate(-50%,-50%); width:15px; height:20px; background:rgba(255,140,60,.9); border-radius:50% 50% 50% 50%/62% 62% 38% 38%; }
+  @keyframes flick{
+    from{ transform:translateX(-50%) scaleY(1) rotate(-4deg); }
+    to{ transform:translateX(-52%) scaleY(1.14) rotate(5deg); }
+  }
+  .caption{ position:absolute; z-index:5; left:50%; transform:translateX(-50%); bottom:48px; font-size:14px; letter-spacing:2px; color:rgba(255,255,255,.85); white-space:nowrap; }
+
+  /* 触发按钮 */
+  .btn{
+    position:relative; z-index:3; border:none; cursor:pointer;
+    font-size:16px; font-weight:800; letter-spacing:2px; color:#fff;
+    padding:14px 36px; border-radius:999px;
+    background:linear-gradient(90deg,#ff7aa8,#a77bff);
+    box-shadow:0 12px 30px rgba(180,110,255,.45);
+    animation:pulse 2.2s ease infinite;
+    transition:transform .15s;
+  }
+  .btn:active{ transform:scale(.94); }
+  @keyframes pulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.06);} }
+  .btn.done{ animation:none; background:linear-gradient(90deg,#7f6bd0,#6a9bff); }
+  .tip{ position:relative; z-index:2; margin-top:16px; font-size:12px; color:rgba(255,255,255,.45); letter-spacing:1px; }
+
+  /* 爱心气泡层 */
+  #fx{ position:fixed; inset:0; z-index:10; pointer-events:none; }
+  .bubble{
+    position:absolute; display:flex; align-items:center; justify-content:center;
+    width:96px; height:42px; border-radius:14px; padding:4px 6px;
+    font-size:12px; font-weight:700; color:#5b4a57; text-align:center; line-height:1.25;
+    box-shadow:0 6px 16px rgba(0,0,0,.25);
+    animation:pop .5s cubic-bezier(.2,1.5,.4,1) both;
+  }
+  .bubble span{ display:block; animation:bob 4s ease-in-out infinite; }
+  @keyframes pop{ from{ transform:scale(.3); opacity:0; } to{ transform:scale(1); opacity:1; } }
+  @keyframes bob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-7px);} }
+
+  .center-msg{
+    position:fixed; left:50%; top:44%; transform:translate(-50%,-50%); z-index:11;
+    font-size:30px; font-weight:800; letter-spacing:4px; white-space:nowrap;
+    color:#ffe08a; text-shadow:0 0 26px rgba(255,180,120,.8);
+    opacity:0; pointer-events:none;
+  }
+  .center-msg.show{ animation:msgIn 1.4s ease forwards; }
+  @keyframes msgIn{ 0%{ opacity:0; transform:translate(-50%,-50%) scale(.6);} 60%{ opacity:1; transform:translate(-50%,-50%) scale(1.05);} 100%{ opacity:1; transform:translate(-50%,-50%) scale(1);} }
+</style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+
+  <div class="stage">
+    <div class="title">🌌 星空生日蛋糕</div>
+    <div class="subtitle">献给 · 荆馨瑶</div>
+
+    <div class="cake">
+      <div class="glow-halo"></div>
+      <div class="cake-body"></div>
+      <div class="cake-top"></div>
+      <div class="plate"></div>
+      <div class="candle"><div class="flame"><div class="in1"></div><div class="in2"></div></div></div>
+      <div class="caption">🎂 happy birthday</div>
+    </div>
+
+    <button class="btn" id="btn">💖 点我 · 弹出爱心祝福</button>
+    <div class="tip">点上面的按钮，爱心会把祝福一颗颗送到你面前 ✨（可再点散落）</div>
+  </div>
+
+  <div id="fx"></div>
+  <div class="center-msg" id="msg">生日快乐 ♡</div>
+
+<script>
+(function(){
+  /* ---------- 星空粒子（复刻 pygame） ---------- */
+  const cv = document.getElementById('stars');
+  const cx = cv.getContext('2d');
+  let W, H;
+  function resize(){ W = cv.width = innerWidth; H = cv.height = innerHeight; }
+  addEventListener('resize', resize); resize();
+  const SC = ['#ffc832','#ff5050','#50b4ff','#dc50ff','#50ff96','#ffffff'];
+  const stars = [];
+  for(let i=0;i<130;i++){
+    stars.push({ x:Math.random()*W, y:Math.random()*H, vx:(Math.random()-.5)*1.2, vy:(Math.random()-.5)*1.2,
+      r:Math.random()*2.4+0.6, c:SC[i%SC.length], tw:Math.random()*Math.PI*2 });
+  }
+  function loop(){
+    cx.clearRect(0,0,W,H);
+    for(const s of stars){
+      s.x += s.vx; s.y += s.vy; s.tw += .05;
+      if(s.x<-5) s.x=W+5; if(s.x>W+5) s.x=-5; if(s.y<-5) s.y=H+5; if(s.y>H+5) s.y=-5;
+      cx.globalAlpha = .5 + .5*Math.sin(s.tw);
+      cx.fillStyle = s.c;
+      cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, Math.PI*2); cx.fill();
+    }
+    cx.globalAlpha = 1;
+    requestAnimationFrame(loop);
+  }
+  loop();
+
+  /* ---------- 蛋糕彩色光斑（复刻 pygame 彩色点） ---------- */
+  const cake = document.querySelector('.cake');
+  const SPOT = ['#ffc832','#ff5050','#50b4ff','#dc50ff','#50ff96','#ff8ab0','#fff'];
+  for(let i=0;i<24;i++){
+    const d = document.createElement('span'); d.className='spot';
+    const r = 3 + Math.random()*9;
+    d.style.width = d.style.height = (r*2)+'px';
+    d.style.left = (60 + Math.random()*92)+'px';
+    d.style.top = (118 + Math.random()*70)+'px';
+    d.style.background = SPOT[Math.floor(Math.random()*SPOT.length)];
+    d.style.boxShadow = '0 0 8px ' + d.style.background;
+    cake.appendChild(d);
+  }
+
+  /* ---------- 爱心祝福气泡（复刻 128 弹窗 / tkinter 爱心） ---------- */
+  const BLESS = [
+    '生日快乐 🎂','天天开心','万事顺意','平安喜乐','心想事成','所愿皆成真',
+    '新的一岁继续发光','继续相信自己','每天都开心','好运一直陪你',
+    '未来越来越好','美好如期而至','闪闪发光','被世界温柔以待',
+    '今天也要开心呀','所愿皆能实现','自由快乐闪耀','一直被爱包围'
+  ];
+  const PASTEL = ['#ffe3ee','#fff0f5','#e3f2ff','#fff6d6','#dff7ec','#ddf6f3','#efe3ff','#ffe0f7','#fff3e0','#fde8e8'];
+  const fx = document.getElementById('fx');
+  const msg = document.getElementById('msg');
+  const btn = document.getElementById('btn');
+  let spawned = false;
+
+  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+  function spawnHeart(){
+    if(spawned) return; spawned = true;
+    btn.classList.add('done'); btn.textContent = '💖 祝福已送达';
+    const N = 52, bw = 96, bh = 42;
+    const pts = [];
+    let mnx=1e9,mxx=-1e9,mny=1e9,mxy=-1e9;
+    for(let i=0;i<N;i++){
+      const t = 2*Math.PI*i/N;
+      const x = 16*Math.sin(t)**3;
+      const y = 13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);
+      pts.push({x,y});
+      mnx=Math.min(mnx,x); mxx=Math.max(mxx,x); mny=Math.min(mny,y); mxy=Math.max(mxy,y);
+    }
+    const cw = innerWidth, ch = innerHeight;
+    const scale = Math.min((cw*0.92-bw)/(mxx-mnx), (ch*0.6-bh)/(mxy-mny));
+    const ccx = cw/2, ccy = ch*0.44;
+    const mx=(mnx+mxx)/2, my=(mny+mxy)/2;
+    pts.forEach((p,i)=>{
+      const left = ccx + (p.x-mx)*scale - bw/2;
+      const top  = ccy - (p.y-my)*scale - bh/2;
+      setTimeout(()=>{
+        const b = document.createElement('div'); b.className='bubble';
+        b.style.left = clamp(left,4,cw-bw-4)+'px';
+        b.style.top  = clamp(top,4,ch-bh-4)+'px';
+        b.style.background = PASTEL[i % PASTEL.length];
+        const s = document.createElement('span'); s.textContent = BLESS[i % BLESS.length];
+        b.appendChild(s);
+        fx.appendChild(b);
+      }, i*60);
+    });
+    setTimeout(()=> msg.classList.add('show'), N*60 + 250);
+  }
+  btn.addEventListener('click', spawnHeart);
+  document.addEventListener('pointerdown', e=>{
+    if(e.target.closest('button')) return;
+    spawnHeart();
+  });
+})();
+</script>
+</body>
+</html>
